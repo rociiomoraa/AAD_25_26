@@ -37,8 +37,41 @@ public class MiniExplorador {
                 System.out.println("El directorio está vacío.");
             }
 
+            //Creamos el menú con opciones.
+            int opcion;
+
+            do {
+                System.out.println("\n=== MENÚ MINI EXPLORADOR DE FICHEROS ===");
+                System.out.println("1. Crear un nuevo fichero vacío.");
+                System.out.println("2. Mover un fichero a otra ubicación.");
+                System.out.println("3. Borrar un fichero existente.");
+                System.out.println("4. Salir.");
+                System.out.println("Selecciona una opción: ");
+
+                opcion = sc.nextInt();
+                sc.nextLine();
+
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Has seleccionado la opción 1: crear un nuevo fichero vacío.");
+                        break;
+                    case 2:
+                        System.out.println("Has seleccionado la opción 2: mover un fichero a otra ubicación ");
+                        break;
+                    case 3:
+                        System.out.println("Has seleccionado la opción 3: borrar un fichero existente.");
+                        break;
+                    case 4:
+                        System.out.println("Saliendo del programa...");
+                        break;
+                    default:
+                        System.out.println("Opcion no válida. Intentalo de nuevo.");
+                }
+
+            } while (opcion != 4);
+
         } else {
-            System.out.println("La ruta no existe o no es un directorio.");
+                System.out.println("La ruta no existe o no es un directorio.");
         }
 
         sc.close(); // Cerramos el Scanner

@@ -56,6 +56,7 @@ public class MiniExplorador {
                 sc.nextLine();
 
                 switch (opcion) {
+
                     case 1:
                         System.out.print("Introduce el nombre del nuevo fichero (con su extensión):");
                         String nombreFichero = sc.nextLine();
@@ -72,6 +73,7 @@ public class MiniExplorador {
                             System.out.println("Error al crear fichero: " + e.getMessage());
                         }
                         break;
+
                     case 2:
                         System.out.println("Introduce el nombre del fichero que quieres mover: ");
                         String nombreFicheroMover = sc.nextLine();
@@ -103,9 +105,25 @@ public class MiniExplorador {
                             System.out.println("El fichero indicado no existe en este directorio.");
                         }
                         break;
+
                     case 3:
-                        System.out.println("Has seleccionado la opción 3: borrar un fichero existente.");
+                        System.out.println("Introduce el nombre del fichero que quieres borrar: ");
+                        String nombreFicheroBorrar = sc.nextLine();
+
+                        File ficheroBorrar = new File(directorio, nombreFicheroBorrar);
+
+                        if (ficheroBorrar.exists() && ficheroBorrar.isFile()) {
+                            boolean borrado = ficheroBorrar.delete();
+                            if (borrado) {
+                                System.out.println("Fichero borrado correctamente: " + ficheroBorrar.getName());
+                            } else {
+                                System.out.println("No se pudo borrar el fichero (puede estar en uso o protegido.");
+                            }
+                        } else {
+                            System.out.println("El fichero indicado no existe en este directorio o es un archivo no válido.");
+                        }
                         break;
+
                     case 4:
                         System.out.println("Saliendo del programa...");
                         break;

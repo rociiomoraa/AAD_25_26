@@ -1,0 +1,142 @@
+package com.rocio.aad.miniexplorador;
+
+import java.io.File;
+import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.io.IOException;
+
+public class MiniExplorador {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);// Con esto leemos la entrada del usuario
+
+        System.out.print("Introduce una ruta de directorio: "); //Pedimos la ruta al usuario
+        String ruta = sc.nextLine(); // Guardamos los datos que aporta el usuario
+
+        File directorio = new File(ruta); // Creamos un objeto File con esa ruta
+
+        // Comprobamos si existe y es un directorio
+        if (directorio.exists() && directorio.isDirectory()) {
+            System.out.println("Contenido del directorio:");
+
+            File[] elementos = directorio.listFiles(); // Obtenemos lista de archivos y carpetas
+
+            if (elementos != null && elementos.length > 0) {
+                SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+                for (File elemento : elementos) {
+                    if (elemento.isDirectory()) {
+                        System.out.println("[DIR] " + elemento.getName());
+                    } else {
+                        long tamano = elemento.length(); // Tamaño en bytes
+                        String fecha = formatoFecha.format(new Date(elemento.lastModified()));
+                        System.out.println("[FILE] " + elemento.getName() + " (" + tamano + " bytes) - Última modificación: " + fecha);
+                    }
+                }
+            } else {
+                System.out.println("El directorio está vacío.");
+            }
+
+            //Creamos el menú con opciones.
+            int opcion;
+
+            do {
+                System.out.println("\n=== MENÚ MINI EXPLORADOR DE FICHEROS ===");
+                System.out.println("1. Crear un nuevo fichero vacío.");
+                System.out.println("2. Mover un fichero a otra ubicación.");
+                System.out.println("3. Borrar un fichero existente.");
+                System.out.println("4. Salir.");
+                System.out.println("Selecciona una opción: ");
+
+                opcion = sc.nextInt();
+                sc.nextLine();
+
+                switch (opcion) {
+
+                    case 1:
+                        System.out.print("Introduce el nombre del nuevo fichero (con su extensión):");
+                        String nombreFichero = sc.nextLine();
+
+                        File nuevoFichero = new File(directorio, nombreFichero);
+
+                        try {
+                            if (nuevoFichero.createNewFile()){
+                                System.out.println("Fichero creado correctamente: " + nuevoFichero.getAbsolutePath());
+                            } else {
+                                System.out.println("El fichero ya existe.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error al crear fichero: " + e.getMessage());
+                        }
+                        break;
+
+                    case 2:
+                        System.out.println("Introduce el nombre del fichero que quieres mover: ");
+                        String nombreFicheroMover = sc.nextLine();
+
+                        File ficheroMover = new File(directorio, nombreFicheroMover);
+
+                        if (ficheroMover.exists() && ficheroMover.isFile()) {
+                            System.out.println("Introduce la ruta de destino: ");
+                            String rutaDestino = sc.nextLine();
+
+                            File destino = new File(rutaDestino);
+
+                            if (destino.exists() && destino.isDirectory()) {
+                                try {
+                                    Path origenPath = ficheroMover.toPath();
+                                    Path destinoPath = Path.of(destino.getAbsolutePath(), ficheroMover.getName());
+
+                                Files.move(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
+
+                                System.out.println("Fichero movido correctamente: " + destinoPath);
+
+                                } catch (IOException e) {
+                                    System.out.println("Error al mover fichero: " + e.getMessage());
+                                }
+                            } else {
+                                System.out.println("La ruta de destino no existe o no es un directorio.");
+                            }
+                        } else {
+                            System.out.println("El fichero indicado no existe en este directorio.");
+                        }
+                        break;
+
+                    case 3:
+                        System.out.println("Introduce el nombre del fichero que quieres borrar: ");
+                        String nombreFicheroBorrar = sc.nextLine();
+
+                        File ficheroBorrar = new File(directorio, nombreFicheroBorrar);
+
+                        if (ficheroBorrar.exists() && ficheroBorrar.isFile()) {
+                            boolean borrado = ficheroBorrar.delete();
+                            if (borrado) {
+                                System.out.println("Fichero borrado correctamente: " + ficheroBorrar.getName());
+                            } else {
+                                System.out.println("No se pudo borrar el fichero (puede estar en uso o protegido.");
+                            }
+                        } else {
+                            System.out.println("El fichero indicado no existe en este directorio o es un archivo no válido.");
+                        }
+                        break;
+
+                    case 4:
+                        System.out.println("Saliendo del programa...");
+                        break;
+                    default:
+                        System.out.println("Opcion no válida. Intentalo de nuevo.");
+                }
+
+            } while (opcion != 4);
+
+        } else {
+                System.out.println("La ruta no existe o no es un directorio.");
+        }
+
+        sc.close(); // Cerramos el Scanner
+    }
+}

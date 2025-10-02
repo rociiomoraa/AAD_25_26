@@ -53,7 +53,20 @@ public class MiniExplorador {
 
                 switch (opcion) {
                     case 1:
-                        System.out.println("Has seleccionado la opción 1: crear un nuevo fichero vacío.");
+                        System.out.print("Introduce el nombre del nuevo fichero (con su extensión):");
+                        String nombreFichero = sc.nextLine();
+
+                        File nuevoFichero = new File(directorio, nombreFichero);
+
+                        try {
+                            if (nuevoFichero.createNewFile()){
+                                System.out.println("Fichero creado correctamente: " + nuevoFichero.getAbsolutePath());
+                            } else {
+                                System.out.println("El fichero ya existe.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error al crear fichero: " + e.getMessage());
+                        }
                         break;
                     case 2:
                         System.out.println("Has seleccionado la opción 2: mover un fichero a otra ubicación ");

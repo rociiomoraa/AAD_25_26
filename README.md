@@ -34,13 +34,7 @@ A continuación se listan las actividades organizadas por unidad o bloque de con
 - **IDE recomendado**: IntelliJ IDEA
 ---
 
-## 📂 Estructura del Repositorio
-```
-/
-├── unidad1/
-│   ├── Actividad1_1. MiniExplorador de Archivos
 
-```
 
 ## ✍️ Autora
 

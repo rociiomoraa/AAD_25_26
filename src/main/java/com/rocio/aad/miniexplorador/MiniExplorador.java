@@ -4,6 +4,10 @@ import java.io.File;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.io.IOException;
 
 public class MiniExplorador {
     public static void main(String[] args) {
@@ -69,7 +73,35 @@ public class MiniExplorador {
                         }
                         break;
                     case 2:
-                        System.out.println("Has seleccionado la opción 2: mover un fichero a otra ubicación ");
+                        System.out.println("Introduce el nombre del fichero que quieres mover: ");
+                        String nombreFicheroMover = sc.nextLine();
+
+                        File ficheroMover = new File(directorio, nombreFicheroMover);
+
+                        if (ficheroMover.exists() && ficheroMover.isFile()) {
+                            System.out.println("Introduce la ruta de destino: ");
+                            String rutaDestino = sc.nextLine();
+
+                            File destino = new File(rutaDestino);
+
+                            if (destino.exists() && destino.isDirectory()) {
+                                try {
+                                    Path origenPath = ficheroMover.toPath();
+                                    Path destinoPath = Path.of(destino.getAbsolutePath(), ficheroMover.getName());
+
+                                Files.move(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
+
+                                System.out.println("Fichero movido correctamente: " + destinoPath);
+
+                                } catch (IOException e) {
+                                    System.out.println("Error al mover fichero: " + e.getMessage());
+                                }
+                            } else {
+                                System.out.println("La ruta de destino no existe o no es un directorio.");
+                            }
+                        } else {
+                            System.out.println("El fichero indicado no existe en este directorio.");
+                        }
                         break;
                     case 3:
                         System.out.println("Has seleccionado la opción 3: borrar un fichero existente.");

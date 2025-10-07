@@ -23,7 +23,7 @@ El programa se ejecuta por consola y utiliza la clase `File` de Java junto con u
 
 ## Estructura del proyecto
 ```
-com.rocio.aad.miniexplorador
+com.rocio.aad.actividad1_1
 │
 ├── MiniExplorador.java
 └── README.md
@@ -35,7 +35,7 @@ com.rocio.aad.miniexplorador
 
 
 mvn compile
-mvn exec:java -Dexec.mainClass="com.rocio.aad.miniexplorador.MiniExplorador"
+mvn exec:java -Dexec.mainClass="com.rocio.aad.actividad1_1.MiniExplorador"
 
 
 Al iniciar, introducir una ruta válida del sistema (por ejemplo, una carpeta del Escritorio).

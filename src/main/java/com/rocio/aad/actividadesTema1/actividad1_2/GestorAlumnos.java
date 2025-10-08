@@ -13,9 +13,18 @@ public class GestorAlumnos {
     private String rutaFichero;
 
     // El constructor recibe la ruta del ficero donde se guardarán los alumnos
-    public GestorAlumnos(String rutaFichero) throws IOException {
+    public GestorAlumnos(String rutaFichero) {
         this.rutaFichero = rutaFichero;
+
+        java.io.File archivo = new java.io.File(rutaFichero);
+        java.io.File carpeta = archivo.getParentFile();
+
+        if (carpeta != null && !carpeta.exists()) {
+            carpeta.mkdirs(); // crea las carpetas necesarias
+            System.out.println("Carpeta creada: " + carpeta.getAbsolutePath());
+        }
     }
+
 
     // Este método inserta un nuevo alumno al final del fichero.
     public void insertarAlumnos(Alumno alumno) throws IOException {

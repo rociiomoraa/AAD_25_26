@@ -19,7 +19,7 @@ public class MainApp {
         // Se crea el fichero donde se guardarán los registros
         GestorAlumnos gestor = null;
         try {
-            gestor = new GestorAlumnos("alumnos.dat");
+            gestor = new GestorAlumnos("src/main/java/com/rocio/aad/actividadesTema1/actividad1_2/alumnos.dat");
         } catch (Exception e) {
             System.out.println("Error al crear el gestor: " + e.getMessage());
             return;

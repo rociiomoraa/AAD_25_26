@@ -51,7 +51,7 @@ public class Alumno {
 
     public void escribir(RandomAccessFile raf) throws IOException {
         raf.writeInt(id); //Escribe 4 bytes (int)
-        raf.writeUTF(nombre); // Escribe 40 bytes (20 caracteres)
+        raf.writeChars(nombre); // Escribe 40 bytes (20 caracteres)
         raf.writeDouble(nota); // Escribe 8 bytes (double)
     }
 

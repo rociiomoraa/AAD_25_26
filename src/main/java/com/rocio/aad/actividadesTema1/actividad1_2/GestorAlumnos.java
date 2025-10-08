@@ -12,7 +12,7 @@ public class GestorAlumnos {
 
     private String rutaFichero;
 
-    // El constructor recibe la ruta del ficero donde se guardarán los alumnos
+    // El constructor recibe la ruta del ficero donde se guardarán los alumnos.
     public GestorAlumnos(String rutaFichero) {
         this.rutaFichero = rutaFichero;
 

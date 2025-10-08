@@ -1,4 +1,4 @@
-package com.rocio.aad.miniexplorador;
+package com.rocio.aad.actividadesTema1.actividad1_1;
 
 import java.io.File;
 import java.util.Scanner;

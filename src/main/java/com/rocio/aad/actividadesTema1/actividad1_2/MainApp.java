@@ -3,32 +3,39 @@ package com.rocio.aad.actividadesTema1.actividad1_2;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class MainApp {
-    /**
-     * Esta es la clase principal del programa. Permite gestionar alumnos con un fichero binario
-     * meidante un menú sencillo que tiene las siguientes opciones:
-     * - Insertar alumnos (acceso secuencial)
-     * - Consultar alumno por posición (acceso aleatorio)
-     * - Modificar notas sin reescribir todo el fichero
-     * - Listar todos los alumnos
-     */
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Esta es la clase principal del programa. Permite gestionar alumnos con un fichero binario
+ * mediante un menú sencillo que tiene las siguientes opciones:
+ * - Insertar alumnos (acceso secuencial)
+ * - Consultar alumno por posición (acceso aleatorio)
+ * - Modificar notas sin reescribir todo el fichero
+ * - Listar todos los alumnos
+ */
+@SpringBootApplication
+@Slf4j
+public class MainApp implements CommandLineRunner {
+
+    @Autowired
+    private GestorAlumnos gestor; // Inyección automática del servicio de gestión
+
     public static void main(String[] args) {
+        SpringApplication.run(MainApp.class, args);
+    }
 
-        // Inicialización
+    @Override
+    public void run(String... args) {
         Scanner sc = new Scanner(System.in);
-        // Se crea el fichero donde se guardarán los registros
-        GestorAlumnos gestor = null;
-        try {
-            gestor = new GestorAlumnos("src/main/java/com/rocio/aad/actividadesTema1/actividad1_2/alumnos.dat");
-        } catch (Exception e) {
-            System.out.println("Error al crear el gestor: " + e.getMessage());
-            return;
-        }
+        int opcion;
 
-        int opcion; // Opcion del menú
-
-        // Crearmos el menu principal
+        // Menú principal
         do {
+            // Usamos println para que el menú se vea bien
             System.out.println("\n===== GESTIÓN DE ALUMNOS =====");
             System.out.println("1. Insertar nuevo alumno.");
             System.out.println("2. Consultar alumno por posición.");
@@ -40,21 +47,21 @@ public class MainApp {
             opcion = leerEntero(sc);
 
             switch (opcion) {
-                case 1 -> insertarAlumno(sc, gestor);
-                case 2 -> consultarAlumno(sc, gestor);
-                case 3 -> modificarNota(sc, gestor);
-                case 4 -> listarAlumnos(gestor);
+                case 1 -> insertarAlumno(sc);
+                case 2 -> consultarAlumno(sc);
+                case 3 -> modificarNota(sc);
+                case 4 -> listarAlumnos();
                 case 0 -> System.out.println("Saliendo del programa...");
                 default -> System.out.println("Opción no válida. Inténtalo de nuevo.");
             }
+
         } while (opcion != 0);
 
         sc.close();
     }
 
-    // Creamos los métodos auxiliares para cada opción del menú.
-
-    private static void insertarAlumno(Scanner sc, GestorAlumnos gestor) {
+    // Opción 1: Insertar alumno
+    private void insertarAlumno(Scanner sc) {
         try {
             System.out.print("ID: ");
             int id = leerEntero(sc);
@@ -65,53 +72,56 @@ public class MainApp {
 
             Alumno nuevo = new Alumno(id, nombre, nota);
             gestor.insertarAlumnos(nuevo);
-            System.out.println("Alumno insertado correctamente");
+            log.info("Alumno insertado correctamente: {}", nuevo);
         } catch (IOException e) {
-            System.out.println("Error al insertar el alumno: " + e.getMessage());
+            log.error("Error al insertar el alumno: {}", e.getMessage());
         }
     }
 
-    private static void consultarAlumno(Scanner sc, GestorAlumnos gestor) {
+    // Opción 2: Consultar alumno por posición
+    private void consultarAlumno(Scanner sc) {
         try {
             System.out.print("Introduce la posición del alumno: ");
             int pos = leerEntero(sc);
             Alumno alumno = gestor.leerAlumnoPorPosicion(pos);
             System.out.println("Datos del alumno -> " + alumno);
         } catch (IOException e) {
-            System.out.println("Error al leer alumno: " + e.getMessage());
+            log.error("Error al leer alumno: {}", e.getMessage());
         }
     }
 
-    private static void modificarNota(Scanner sc, GestorAlumnos gestor) {
+    // Opción 3: Modificar nota
+    private void modificarNota(Scanner sc) {
         try {
             System.out.print("Posición del alumno: ");
             int pos = leerEntero(sc);
             System.out.print("Nueva nota: ");
             double nuevaNota = leerDouble(sc);
             gestor.modificarNota(pos, nuevaNota);
-            System.out.println("Nota modificada correctamente.");
+            log.info("Nota modificada correctamente.");
         } catch (IOException e) {
-            System.out.println("Error al modificar la nota: " + e.getMessage());
+            log.error("Error al modificar la nota: {}", e.getMessage());
         }
     }
 
-    private static void listarAlumnos(GestorAlumnos gestor) {
+    // Opción 4: Listar alumnos
+    private void listarAlumnos() {
         try {
             System.out.println("\nListado de alumnos:");
             gestor.listarAlumnos();
         } catch (IOException e) {
-            System.out.println("Error al listar alumnos: " + e.getMessage());
+            log.error("Error al listar alumnos: {}", e.getMessage());
         }
     }
 
-    // Métodos de lectura segura de numeros enteros y decimaales
+    // Métodos auxiliares de lectura
     private static int leerEntero(Scanner sc) {
         while (!sc.hasNextInt()) {
             System.out.print("Por favor, introduce un número entero: ");
             sc.next();
         }
         int num = sc.nextInt();
-        sc.nextLine(); // Limpia el salto de línea
+        sc.nextLine(); // limpia el salto de línea
         return num;
     }
 
@@ -121,8 +131,7 @@ public class MainApp {
             sc.next();
         }
         double num = sc.nextDouble();
-        sc.nextLine(); // Limpia el salto de línea
+        sc.nextLine(); // limpia el salto de línea
         return num;
     }
-
 }

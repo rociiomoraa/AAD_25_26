@@ -2,7 +2,15 @@ package com.rocio.aad.actividadesTema1.actividad1_2;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Data // Lombok genera getters, setters, toString, equals y hashCode
+@NoArgsConstructor // Constructor vacío
+@AllArgsConstructor // Constructor con todos los parámetros
+@Component // Permite que Spring gestione esta clase si es necesario
 public class Alumno {
 
     /**
@@ -21,76 +29,37 @@ public class Alumno {
     private String nombre;
     private double nota;
 
-    // Constructor
-    public Alumno(int id, String nombre, double nota) {
-        this.id = id;
-        this.nombre = ajustarNombre (nombre);
-        this.nota = nota;
-    }
-
-    /**
-     * Creamos un método que ajuste el nombre a una longitud fija,
-     * haciendo que se rellenen espacios o que se acorte si es muy largo
-     */
-
-    private static String ajustarNombre (String nombre) {
-        if (nombre == null) nombre = "";
-        if (nombre.length() > nombre_longitud) {
-            //Si el nombre es más largo de 20 caracteres, se corta
-            return nombre.substring(0, nombre_longitud);
+    // Ajusta el nombre al tamaño fijo
+    private String ajustarNombre(String nombre) {
+        StringBuilder sb = new StringBuilder(nombre);
+        if (sb.length() > nombre_longitud) {
+            sb.setLength(nombre_longitud);
         } else {
-            //Si el nombre es más corto, se rellenan los espacios hasta llegar a 20
-            return String.format("%-" + nombre_longitud + "s", nombre);
+            while (sb.length() < nombre_longitud) {
+                sb.append(' ');
+            }
         }
+        return sb.toString();
     }
 
-    /**
-     * Creamos un método para guardar al alumno en un fichero binario (RandomAccessFile)
-     * El método escribe los datos en orden: id, nombre, nota.
-     */
-
-    public void escribir(RandomAccessFile raf) throws IOException {
-        raf.writeInt(id); //Escribe 4 bytes (int)
-        raf.writeChars(nombre); // Escribe 40 bytes (20 caracteres)
-        raf.writeDouble(nota); // Escribe 8 bytes (double)
-    }
-
-    /**
-     * Creamos un método que lee un alumno desde la posición actual del fichero binario y devuleve
-     * un objeto Alumno con los datos leídos.
-     */
-
-    public static Alumno leer(RandomAccessFile raf) throws IOException {
-        int id = raf.readInt(); // Lee 4 bytes
-        char [] nombreChars = new char[nombre_longitud];
+    // Método para escribir un alumno en el fichero binario
+    public void escribir(RandomAccessFile file) throws IOException {
+        file.writeInt(id);
+        String nombreAjustado = ajustarNombre(nombre);
         for (int i = 0; i < nombre_longitud; i++) {
-            nombreChars[i] = raf.readChar(); // Lee los 40 bytes de los 20 caracteres
+            file.writeChar(nombreAjustado.charAt(i));
         }
-        String nombre = new String(nombreChars).trim();
-        double nota = raf.readDouble(); // Lee 8 bytes
-        return new Alumno(id, nombre, nota);
+        file.writeDouble(nota);
     }
 
-    // Getters y Setters
-
-    public int getId() {
-        return id;
+    // Método para leer un alumno desde el fichero binario
+    public static Alumno leer(RandomAccessFile file) throws IOException {
+        int id = file.readInt();
+        StringBuilder nombre = new StringBuilder();
+        for (int i = 0; i < nombre_longitud; i++) {
+            nombre.append(file.readChar());
+        }
+        double nota = file.readDouble();
+        return new Alumno(id, nombre.toString().trim(), nota);
     }
-    public String getNombre() {
-        return nombre.trim();
-    }
-    public double getNota() {
-        return nota;
-    }
-    public void setNota(double nota) {
-        this.nota = nota;
-    }
-
-    // Método toString
-    @Override
-    public String toString() {
-        return String.format("ID: %d | Nombre: %s | Nota: %.2f", id, getNombre(), nota);
-    }
-
 }
-

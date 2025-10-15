@@ -1,77 +1,78 @@
 package com.rocio.aad.actividadesTema1.actividad1_2;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import org.springframework.stereotype.Service;
+import java.io.*;
 
+/**
+ * Clase GestorAlumnos.
+ * Se encarga de gestionar el fichero binario de alumnos
+ * mediante operaciones de inserción, lectura, modificación y listado.
+ */
+@Service // Se marca como servicio para que Spring la reconozca y la cree automáticamente
 public class GestorAlumnos {
 
-    /**
-     * La clase gestión de alumnos gestiona el acceso al fichero binario de alumnos.
-     * Permite insertar, leer por posición y modificar la nota del alumno.
-     */
+    private final String FILE_PATH;
 
-    private String rutaFichero;
-
-    // El constructor recibe la ruta del ficero donde se guardarán los alumnos.
-    public GestorAlumnos(String rutaFichero) {
-        this.rutaFichero = rutaFichero;
-
-        java.io.File archivo = new java.io.File(rutaFichero);
-        java.io.File carpeta = archivo.getParentFile();
-
-        if (carpeta != null && !carpeta.exists()) {
-            carpeta.mkdirs(); // crea las carpetas necesarias
-            System.out.println("Carpeta creada: " + carpeta.getAbsolutePath());
-        }
+    // Constructor: recibe la ruta del fichero
+    public GestorAlumnos() {
+        // Ruta por defecto
+        this.FILE_PATH = "src/main/java/com/rocio/aad/actividadesTema1/actividad1_2/alumnos.dat";
     }
 
+    public GestorAlumnos(String ruta) {
+        this.FILE_PATH = ruta;
+    }
 
-    // Este método inserta un nuevo alumno al final del fichero.
+    /**
+     * Inserta un nuevo alumno al final del fichero (acceso secuencial).
+     */
     public void insertarAlumnos(Alumno alumno) throws IOException {
-        //rw = lectura y escritura
-        try (RandomAccessFile raf = new RandomAccessFile(rutaFichero, "rw")) {
-            raf.seek(raf.length()); // Se mueve al final del fichero
-            alumno.escribir(raf); // Escribe el nuevo registro
+        try (RandomAccessFile file = new RandomAccessFile(FILE_PATH, "rw")) {
+            file.seek(file.length()); // mueve el puntero al final
+            alumno.escribir(file);
         }
     }
 
     /**
-     * Este método lee un alumno por su posición en el fichero (acceso aleatorio).
-     * Por ejemplo: posición 0 = primer alumno, posición 1 = segundo alumno...
+     * Lee un alumno por posición (acceso aleatorio).
      */
-
     public Alumno leerAlumnoPorPosicion(int posicion) throws IOException {
-        try (RandomAccessFile raf = new RandomAccessFile(rutaFichero, "r")) {
-            long posicionBytes = (long) posicion * Alumno.tam_registro; //Calcula el desplazamiento en bytes
-            if (posicionBytes >= raf.length()) {
-                throw new IOException("La posición indicada no existe");
+        try (RandomAccessFile file = new RandomAccessFile(FILE_PATH, "r")) {
+            long pos = (long) posicion * Alumno.tam_registro;
+            if (pos >= file.length() || pos < 0) {
+                throw new IOException("Posición fuera del rango del fichero.");
             }
-            raf.seek(posicionBytes); // Se mueve justo al inicio del registro
-            return Alumno.leer(raf); // Lee y devulve al alumno
+            file.seek(pos);
+            return Alumno.leer(file);
         }
     }
 
-    // Este método modifica la nota de un alumno sin reescribir todo el fichero
+    /**
+     * Modifica la nota de un alumno sin reescribir todo el fichero.
+     */
     public void modificarNota(int posicion, double nuevaNota) throws IOException {
-        try (RandomAccessFile raf = new RandomAccessFile(rutaFichero, "rw")) {
-            long posicionBytes = (long) posicion * Alumno.tam_registro;
-            if (posicionBytes >= raf.length()) {
-                throw new IOException("La posición indicada no existe.");
+        try (RandomAccessFile file = new RandomAccessFile(FILE_PATH, "rw")) {
+            long pos = (long) posicion * Alumno.tam_registro; // coherente con leerAlumnoPorPosicion
+            if (pos >= file.length() || pos < 0) {
+                throw new IOException("Posición fuera del rango del fichero.");
             }
-            // Salta el ID (4 bytes) y el nombre (40 bytes).
-            raf.seek(posicionBytes + Integer.BYTES + (Character.BYTES * Alumno.nombre_longitud));
-            raf.writeDouble(nuevaNota); // Sobreescribe la nota (8 bytes)
+            file.seek(pos);
+            Alumno alumno = Alumno.leer(file);
+            alumno.setNota(nuevaNota);
+            file.seek(pos);
+            alumno.escribir(file);
         }
     }
 
-    // Este método muestra todos los alumnos del fichero haciendo un recorrido secuencial
+    /**
+     * Lista todos los alumnos guardados en el fichero.
+     */
     public void listarAlumnos() throws IOException {
-        try (RandomAccessFile raf = new RandomAccessFile(rutaFichero, "r")) {
-            int contador = 0;
-            while (raf.getFilePointer() < raf.length()) {
-                Alumno alumno = Alumno.leer(raf);
-                System.out.println("Posición " + contador + ": " + alumno);
-                contador++;
+        try (RandomAccessFile file = new RandomAccessFile(FILE_PATH, "r")) {
+            long numRegistros = file.length() / Alumno.tam_registro;
+            for (int i = 0; i < numRegistros; i++) {
+                Alumno alumno = Alumno.leer(file);
+                System.out.println(alumno);
             }
         }
     }

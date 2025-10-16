@@ -17,11 +17,6 @@ public class AadApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		File fichero = new File("ejemplo.txt");
-		if (fichero.createNewFile()) {
-			log.info("Fichero creado: " + fichero.getName());
-		} else {
-			log.info("El fichero ya existe.");  //¿cómo se dónde está?
-		}
+
 	}
 }

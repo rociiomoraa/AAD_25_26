@@ -1,0 +1,41 @@
+[ {
+  "id" : 1,
+  "name" : "Ana",
+  "grade" : 8.5
+}, {
+  "id" : 2,
+  "name" : "Juan",
+  "grade" : 6.7
+}, {
+  "id" : 3,
+  "name" : "Luis",
+  "grade" : 9.1
+}, {
+  "id" : 4,
+  "name" : "Maria",
+  "grade" : 7.4
+}, {
+  "id" : 5,
+  "name" : "Carlos",
+  "grade" : 5.9
+}, {
+  "id" : 6,
+  "name" : "Sofia",
+  "grade" : 8.0
+}, {
+  "id" : 7,
+  "name" : "Diego",
+  "grade" : 6.3
+}, {
+  "id" : 8,
+  "name" : "Lucia",
+  "grade" : 9.5
+}, {
+  "id" : 9,
+  "name" : "Pedro",
+  "grade" : 7.8
+}, {
+  "id" : 10,
+  "name" : "Elena",
+  "grade" : 8.2
+} ]

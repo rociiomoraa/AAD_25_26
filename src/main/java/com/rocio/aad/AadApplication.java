@@ -1,7 +1,9 @@
 package com.rocio.aad;
 
-import com.rocio.aad.model.Modulo;
+import com.rocio.aad.application.StudentService;
+import com.rocio.aad.model.Module;
 import com.rocio.aad.model.Student;
+import com.rocio.aad.util.Constant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -10,11 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
 
-
 @SpringBootApplication
 @Slf4j
 @RequiredArgsConstructor
-
 public class AadApplication implements CommandLineRunner {
 
     private final StudentService studentService;
@@ -25,15 +25,15 @@ public class AadApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Student student = new Student("12345678a", "Rocío", "García", "Computer Since");
-        Modulo module1 = new Modulo("CS101", "Computer Since");
-        Modulo module2 = new Modulo("CS102", "Data Structures");
-        List<Modulo> modules = List.of(module1, module2);
-        studentService.createStudent(student, modulo);
-
-        if (crea != null) {
+        Student vito = new Student("12345678A", "John", "Doe", "Computer Science");
+        Module module1 = new Module("CS101", "Introduction to Computer Science");
+        Module module2 = new Module("CS102", "Data Structures");
+        List<Module> modules = List.of(module1, module2);
+        Student create = studentService.createStudent(vito, modules);
+        if (create != null) {
             log.info("Create: {}", create);
-
+        } else {
+            log.error(Constant.STUDENT_NOT_FOUND);
         }
     }
 }

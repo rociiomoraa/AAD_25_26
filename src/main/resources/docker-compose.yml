@@ -3,7 +3,7 @@ version: '3.9'
 services:
   db:
     image: postgres:latest
-    container_name: aad_db_container_2
+    container_name: aad_db_container
     restart: always
     environment:
       POSTGRES_DB: aad_db

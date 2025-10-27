@@ -1,43 +1,43 @@
-# 🗂️ Acceso a Datos – Curso 2025
+# 🐘 PostgreSQL con Docker Compose
 
-Repositorio de prácticas, ejercicios y proyectos de la asignatura **Acceso a Datos** del curso **2025-2026**.  
-Aquí se irán recopilando las diferentes actividades realizadas durante el curso, organizadas por tema.
+## Descripción
 
----
-
-## 📘 Contenido del Repositorio
-
-Este repositorio incluye:
-- Ejercicios prácticos por tema.
-- Proyectos guiados y evaluables.
-- Ejemplos de código explicativos.
-- Recursos y documentación adicional.
+Este proyecto levanta un contenedor de **PostgreSQL** usando Docker Compose.  
+El **conector** es lo que usa la aplicación para comunicarse con la base de datos (por ejemplo, una librería como
+`psycopg2` en Python o `pg` en Node.js).
 
 ---
 
-## 🧭 Índice de Actividades
+## Levantar el servicio
 
-A continuación se listan las actividades organizadas por unidad o bloque de contenido.  
-*(Este índice se irá actualizando conforme avance la asignatura.)*
+``` bash
+ docker-compose up -d
+```
 
-### 🔹 Unidad 1 – Manejo de ficheros
-- [x] **[Actividad 1.1 – Mini Explorador de Ficheros](https://github.com/rociiomoraa/AAD_25_26/tree/main/src/main/java/com/rocio/aad/miniexplorador)**
-
+Esto crea el contenedor `aad_db_container` con PostgreSQL.
 
 ---
 
-## ⚙️ Requisitos
+## Variables usadas
 
-- **Java 17** o superior
-- **Maven** o **Gradle** para la gestión de dependencias
-- **MySQL / PostgreSQL** (según el tema)
-- **IDE recomendado**: IntelliJ IDEA
+- **POSTGRES_DB:** `aad_db` → nombre de la base de datos
+- **POSTGRES_USER:** `user` → usuario de la base de datos
+- **POSTGRES_PASSWORD:** `pass` → contraseña del usuario
+
 ---
 
+## Probar conexión
 
+Desde mi máquina:
 
-## ✍️ Autora
+```bash
+psql -h localhost -p 5433 -U user -d aad_db
+```
 
-**Rocío Mora García**  
-📧 *rocio.mora.garcia02@gmail.com*  
-📅 Curso 2025 – Asignatura: Acceso a Datos  
+O desde dentro del contenedor:
+
+```bash
+docker exec -it aad_db_container psql -U user -d aad_db
+```
+
+Si ves el prompt `aad_db=#`, la conexión funciona.

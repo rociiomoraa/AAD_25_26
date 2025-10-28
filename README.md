@@ -1,43 +1,144 @@
-# 🗂️ Acceso a Datos – Curso 2025
+# 🎓 Gestión de Alumnos - Fichero Binario con Acceso Aleatorio
 
-Repositorio de prácticas, ejercicios y proyectos de la asignatura **Acceso a Datos** del curso **2025-2026**.  
-Aquí se irán recopilando las diferentes actividades realizadas durante el curso, organizadas por tema.
+Aplicación desarrollada en **Java**, utilizando **Spring Boot** y **Lombok**, que permite gestionar registros de alumnos
+almacenados en un **fichero binario** de tamaño fijo.
 
----
+Cada registro contiene:
 
-## 📘 Contenido del Repositorio
+- `id` (entero, 4 bytes)
+- `nombre` (cadena de 20 caracteres fijos, 40 bytes)
+- `nota` (float, 4 bytes)
 
-Este repositorio incluye:
-- Ejercicios prácticos por tema.
-- Proyectos guiados y evaluables.
-- Ejemplos de código explicativos.
-- Recursos y documentación adicional.
+Cada registro ocupa **48 bytes**, lo que permite acceder directamente a cualquier alumno mediante su posición.
 
 ---
 
-## 🧭 Índice de Actividades
+## 🧩 Funcionalidades principales
 
-A continuación se listan las actividades organizadas por unidad o bloque de contenido.  
-*(Este índice se irá actualizando conforme avance la asignatura.)*
-
-### 🔹 Unidad 1 – Manejo de ficheros
-- [x] **[Actividad 1.1 – Mini Explorador de Ficheros](https://github.com/rociiomoraa/AAD_25_26/tree/main/src/main/java/com/rocio/aad/miniexplorador)**
-
+✅ Insertar nuevos alumnos (acceso secuencial).  
+✅ Consultar un alumno por su posición (acceso aleatorio).  
+✅ Modificar la nota de un alumno sin reescribir el fichero.  
+✅ Listar todos los alumnos almacenados.  
+✅ Control de errores y logs profesionales (`log.info`, `log.error`, `log.warn`).
 
 ---
 
-## ⚙️ Requisitos
+## ⚙️ Estructura del proyecto
 
-- **Java 17** o superior
-- **Maven** o **Gradle** para la gestión de dependencias
-- **MySQL / PostgreSQL** (según el tema)
-- **IDE recomendado**: IntelliJ IDEA
+```
+src/
+ └─ main/
+    ├─ java/com/rocio/aad/
+    │   ├─ model/
+    │   │   └─ Student.java
+    │   ├─ repository/
+    │   │   └─ StudentRepository.java
+    │   ├─ service/
+    │   │   └─ StudentService.java
+    │   ├─ util/
+    │   │   └─ Constants.java
+    │   └─ AadApplication.java
+    └─ resources/
+        └─ application.properties
+```
+
 ---
 
+## 🧱 Diseño del fichero binario
 
+| Campo     | Tipo       | Bytes  | Descripción                                        |
+|-----------|------------|--------|----------------------------------------------------|
+| id        | int        | 4      | Identificador del alumno                           |
+| nombre    | String(20) | 40     | Nombre con longitud fija (20 caracteres × 2 bytes) |
+| nota      | float      | 4      | Nota del alumno                                    |
+| **Total** |            | **48** | bytes por registro                                 |
 
-## ✍️ Autora
+---
 
-**Rocío Mora García**  
-📧 *rocio.mora.garcia02@gmail.com*  
-📅 Curso 2025 – Asignatura: Acceso a Datos  
+## 🚀 Ejecución del programa
+
+1. Clonar o descargar el proyecto.
+2. Compilar con Maven:
+   ```bash
+   mvn clean package
+   ```
+3. Ejecutar el `.jar` generado:
+   ```bash
+   java -jar target/aad-0.0.1-SNAPSHOT.jar
+   ```
+
+4. Al iniciarse, se mostrará un menú interactivo en consola:
+
+```
+===== STUDENT MANAGEMENT MENU =====
+1. Insert new student
+2. Read student by position
+3. Update student grade
+4. List all students
+0. Exit
+Choose an option:
+```
+
+---
+
+## 🧠 Ejemplo de uso
+
+### ➕ Insertar alumnos
+
+```
+ID: 1
+Name: Ana
+Grade: 8.5
+Student inserted successfully.
+```
+
+### 🔍 Consultar alumno
+
+```
+Enter position: 0
+Student found -> Student(id=1, name=Ana, grade=8.5)
+```
+
+### ✏️ Modificar nota
+
+```
+Enter position: 0
+New grade: 9.0
+Grade updated for position 0 to 9.0
+```
+
+### 📋 Listar alumnos
+
+```
+===== STUDENT LIST =====
+0 -> Student(id=1, name=Ana, grade=9.0)
+```
+
+---
+
+## 🧾 Criterios de evaluación cumplidos
+
+| Criterio | Descripción                                                                                                  | Estado |
+|----------|--------------------------------------------------------------------------------------------------------------|--------|
+| **b**    | Comentarios y Javadoc claros. Logs y pruebas demuestran el funcionamiento del acceso secuencial y aleatorio. | ✅      |
+| **c**    | Uso correcto de `RandomAccessFile` para lectura de registros.                                                | ✅      |
+| **d**    | Escritura binaria de registros de tamaño fijo con acceso directo.                                            | ✅      |
+
+---
+
+## 🧠 Conceptos trabajados
+
+- Acceso **secuencial** vs **aleatorio** en ficheros.
+- Uso de `RandomAccessFile` para leer y escribir bytes.
+- Manejo de **registros de tamaño fijo**.
+- Control de excepciones y recursos con `try-with-resources`.
+- Integración con **Spring Boot** y **Lombok**.
+
+---
+
+## 👩‍💻 Autora
+
+**Rocío Mora Garcia**  
+📅 2025  
+📚 Módulo: Acceso a Datos  
+🏫 IES La Marisma

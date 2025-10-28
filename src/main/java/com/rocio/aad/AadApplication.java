@@ -60,12 +60,12 @@ public class AadApplication implements CommandLineRunner {
         int option;
 
         do {
-            System.out.println("\n===== STUDENT MANAGEMENT MENU =====");
-            System.out.println("1. Insert new student");
-            System.out.println("2. Read student by position");
-            System.out.println("3. Update student grade");
-            System.out.println("4. List all students");
-            System.out.println("0. Exit");
+            log.info("\n===== STUDENT MANAGEMENT MENU =====");
+            log.info("1. Insert new student");
+            log.info("2. Read student by position");
+            log.info("3. Update student grade");
+            log.info("4. List all students");
+            log.info("0. Exit");
             System.out.print("Choose an option: ");
 
             option = readInt(sc);
@@ -75,8 +75,8 @@ public class AadApplication implements CommandLineRunner {
                 case 2 -> readStudent(sc);
                 case 3 -> updateGrade(sc);
                 case 4 -> listStudents();
-                case 0 -> System.out.println("Exiting program...");
-                default -> System.out.println("Invalid option, please try again.");
+                case 0 -> log.info("Exiting program...");
+                default -> log.warn("Invalid option, please try again.");
             }
 
         } while (option != 0);
@@ -108,8 +108,8 @@ public class AadApplication implements CommandLineRunner {
 
         Optional<Student> student = studentService.getStudentByPosition(position);
         student.ifPresentOrElse(
-                s -> System.out.println("Student found -> " + s),
-                () -> System.out.println("No student found at that position.")
+                s -> log.info("Student found -> {}", s),
+                () -> log.warn("No student found at that position.")
         );
     }
 
@@ -132,18 +132,19 @@ public class AadApplication implements CommandLineRunner {
     private void listStudents() {
         int index = 0;
         Optional<Student> student;
-        System.out.println("\n===== STUDENT LIST =====");
+        log.info("\n===== STUDENT LIST =====");
 
         // Leer secuencialmente hasta que no haya más registros
         while ((student = studentService.getStudentByPosition(index)).isPresent()) {
-            System.out.println(index + " -> " + student.get());
+            log.info("{} -> {}", index, student.get());
             index++;
         }
 
         if (index == 0) {
-            System.out.println("No students registered yet.");
+            log.warn("No students registered yet.");
         }
     }
 }
+
 
 

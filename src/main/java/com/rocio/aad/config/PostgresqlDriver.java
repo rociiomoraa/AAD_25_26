@@ -1,4 +1,4 @@
-package com.rocio.aad;
+package com.rocio.aad.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;

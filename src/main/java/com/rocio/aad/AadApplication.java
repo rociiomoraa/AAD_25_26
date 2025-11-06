@@ -1,5 +1,6 @@
 package com.rocio.aad;
 
+import com.rocio.aad.config.PostgresqlDriver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 @Slf4j
 @RequiredArgsConstructor
 public class AadApplication implements CommandLineRunner {
+
     private final PostgresqlDriver postgresqlDriver;
 
     public static void main(String[] args) {
@@ -19,15 +21,13 @@ public class AadApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info("Testing JDBC connection...");
         try (Connection conn = postgresqlDriver.getConnection()) {
-            log.info("Connection successful: {}",
-                    conn.getMetaData().getURL());
-            log.info("Database: {}",
-                    conn.getMetaData().getDatabaseProductName());
+            log.info("Connection successful: {}", conn.getMetaData().getURL());
+            log.info("Database: {}", conn.getMetaData().getDatabaseProductName());
         } catch (Exception e) {
-            System.err.println("Connection failed: " + e.getMessage());
+            log.error("Connection failed: {}", e.getMessage());
         }
     }
 }

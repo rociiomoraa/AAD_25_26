@@ -5,7 +5,8 @@ spring:
     password: pass
     driver-class-name: org.postgresql.Driver
 
-sql:
-  scripts:
-    - classpath:sql.ddl/01_schema.sql
-    - classpath:sql.ddl/02_procedures.sql
+aad:
+  sql:
+    scripts:
+      - classpath:sql/ddl/01_schema.sql
+      - classpath:sql/ddl/02_procedures.sql

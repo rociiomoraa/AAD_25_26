@@ -136,7 +136,6 @@ public class EnrollmentRepository {
             log.error("Error deleting enrollment student={} module={}", studentId, moduleId, e);
             throw new RuntimeException("Error deleting enrollment", e);
         }
-
     }
 
     /**
@@ -174,5 +173,68 @@ public class EnrollmentRepository {
                 rs.getInt("id_modulo"),
                 rs.getDate("fecha").toLocalDate()
         );
+    }
+
+    /**
+     * Comprueba si existe ya una matrícula para un alumno y un módulo concretos.
+     * Devuelve true si la matrícula existe, false en caso contrario.
+     */
+    public boolean exists(int studentId, int moduleId) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM matricula
+                WHERE id_alumno = ? AND id_modulo = ?
+                """;
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, studentId);
+            ps.setInt(2, moduleId);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error("Error checking enrollment existence for student={} module={}",
+                    studentId, moduleId, e);
+        }
+
+        return false;
+    }
+
+    /**
+     * Busca una matrícula concreta a partir de su clave compuesta
+     * (id_alumno + id_modulo). Si no existe, devuelve null.
+     */
+    public Enrollment findEnrollment(int studentId, int moduleId) {
+        String sql = """
+                SELECT id_alumno, id_modulo, fecha
+                FROM matricula
+                WHERE id_alumno = ? AND id_modulo = ?
+                """;
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, studentId);
+            ps.setInt(2, moduleId);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapEnrollment(rs);
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            log.error("Error fetching enrollment student={} module={}",
+                    studentId, moduleId, e);
+            throw new RuntimeException("Error fetching enrollment", e);
+        }
     }
 }

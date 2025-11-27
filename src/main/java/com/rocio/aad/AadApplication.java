@@ -50,36 +50,57 @@ public class AadApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // Crear alumno de ejemplo
-        Student student = new Student(
-                null,
-                "50299841Z",
-                "María Gómez",
-                "maria.gomez@example.com",
-                null
-        );
-        student = studentRepo.insert(student);
-        log.info("Student created: {}", student);
 
-        // Crear módulo de ejemplo
-        Module module = new Module(
-                null,
-                "PSP",
-                "Programación de Servicios y Procesos",
-                180
-        );
-        module = moduleRepo.insert(module);
-        log.info("Module created: {}", module);
+        // Crear o recuperar alumno
+        Student student = studentRepo.findByNif("50299841Z");
 
-        // Matricular alumno en el módulo
-        Enrollment enrollment = new Enrollment(
-                null,
-                student.getId(),
-                module.getId(),
-                LocalDate.now()
-        );
-        enrollmentRepo.createEnrollment(enrollment);
-        log.info("Student enrolled successfully");
+        if (student == null) {
+            student = new Student(
+                    null,
+                    "50299841Z",
+                    "María Gómez",
+                    "maria.gomez@example.com",
+                    null
+            );
+            student = studentRepo.insert(student);
+            log.info("Student created: {}", student);
+        } else {
+            log.info("Student already exists: {}", student);
+        }
+
+
+        // Crear o recuperar módulo
+
+        Module module = moduleRepo.findByCode("PSP");
+
+        if (module == null) {
+            module = new Module(
+                    null,
+                    "PSP",
+                    "Programación de Servicios y Procesos",
+                    180
+            );
+            module = moduleRepo.insert(module);
+            log.info("Module created: {}", module);
+        } else {
+            log.info("Module already exists: {}", module);
+        }
+
+        // Crear matrícula si no existe
+        boolean enrollmentExists = enrollmentRepo.exists(student.getId(), module.getId());
+
+        if (!enrollmentExists) {
+            Enrollment enrollment = new Enrollment(
+                    null,
+                    student.getId(),
+                    module.getId(),
+                    LocalDate.now()
+            );
+            enrollmentRepo.createEnrollment(enrollment);
+            log.info("Student enrolled successfully");
+        } else {
+            log.info("Enrollment already exists — skipping");
+        }
 
         // Borrar alumno (comentado para no eliminarlo realmente)
         // studentRepo.delete(student.getId());

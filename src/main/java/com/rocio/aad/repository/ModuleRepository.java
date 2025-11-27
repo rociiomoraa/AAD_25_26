@@ -166,4 +166,55 @@ public class ModuleRepository {
                 rs.getInt("horas")
         );
     }
+
+    /**
+     * Busca un módulo por su código único. Si no existe, devuelve null.
+     * Este método es útil para evitar duplicados al iniciar la aplicación.
+     */
+    public Module findByCode(String code) {
+        String sql = "SELECT id_modulo, codigo, nombre, horas FROM modulo WHERE codigo = ?";
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, code);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapModule(rs);
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            log.error("Error fetching module with code {}", code, e);
+            throw new RuntimeException("Error fetching module by code", e);
+        }
+    }
+
+    /**
+     * Indica si existe ya un módulo con un código determinado.
+     * Devuelve true si existe, false en caso contrario.
+     */
+    public boolean existsByCode(String code) {
+        String sql = "SELECT COUNT(*) FROM modulo WHERE codigo = ?";
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, code);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error("Error checking existence of module {}", code, e);
+        }
+
+        return false;
+    }
 }

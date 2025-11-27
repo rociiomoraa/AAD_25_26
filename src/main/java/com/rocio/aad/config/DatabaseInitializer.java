@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Esta clase se encarga de ejecutar los scripts SQL definidos en application.yml
- * al arrancar la app. De esta forma la base de datos se inicializa automáticamente.
+ * Inicializa la base de datos ejecutando los scripts SQL indicados en application.yml.
+ * Los scripts se ejecutan como bloques completos para permitir funciones PL/pgSQL con $$.
  */
 @Slf4j
 @Component
@@ -39,13 +39,8 @@ public class DatabaseInitializer {
 
                 try (var con = driver.getConnection();
                      var statement = con.createStatement()) {
-
-                    for (String block : sql.split(";")) {
-                        var trimmed = block.trim();
-                        if (!trimmed.isBlank()) {
-                            statement.execute(trimmed);
-                        }
-                    }
+                    
+                    statement.execute(sql);
                 }
 
                 log.info("Executed script: {}", scriptPath);

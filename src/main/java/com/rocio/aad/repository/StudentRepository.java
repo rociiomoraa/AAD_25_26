@@ -27,7 +27,7 @@ public class StudentRepository {
      * Si ocurre algún error, se registra en los logs.
      */
     public Student insert(Student student) {
-        String sql = "INSERT INTO alumno (nif, nombre, email) VALUES (?, ?, ?) RETURNING id";
+        String sql = "INSERT INTO alumno (nif, nombre, email) VALUES (?, ?, ?) RETURNING id_alumno";
 
         try (var con = driver.getConnection();
              var ps = con.prepareStatement(sql)) {
@@ -157,6 +157,52 @@ public class StudentRepository {
                 List.of() // modules se rellenará en EnrollmentRepository si hace falta
         );
     }
+
+    /**
+     * Busca un alumno por su NIF. Devuelve null si no existe.
+     */
+    public Student findByNif(String nif) {
+        String sql = "SELECT id_alumno, nif, nombre, email FROM alumno WHERE nif = ?";
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nif);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapStudent(rs);
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            log.error("Error fetching student with NIF {}", nif, e);
+            throw new RuntimeException("Error fetching student by NIF", e);
+        }
+    }
+
+    /**
+     * Comprueba si ya existe un alumno con un NIF dado.
+     */
+    public boolean existsByNif(String nif) {
+        String sql = "SELECT COUNT(*) FROM alumno WHERE nif = ?";
+
+        try (var con = driver.getConnection();
+             var ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nif);
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error("Error checking NIF existence {}", nif, e);
+        }
+
+        return false;
+    }
 }
-
-

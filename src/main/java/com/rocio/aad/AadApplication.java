@@ -50,7 +50,6 @@ public class AadApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-
         // Crear o recuperar alumno
         Student student = studentRepo.findByNif("50299841Z");
 
@@ -58,8 +57,8 @@ public class AadApplication implements CommandLineRunner {
             student = new Student(
                     null,
                     "50299841Z",
-                    "María Gómez",
-                    "maria.gomez@example.com",
+                    "Rocío García",
+                    "rocio.garcia@example.com",
                     null
             );
             student = studentRepo.insert(student);
@@ -68,9 +67,7 @@ public class AadApplication implements CommandLineRunner {
             log.info("Student already exists: {}", student);
         }
 
-
         // Crear o recuperar módulo
-
         Module module = moduleRepo.findByCode("PSP");
 
         if (module == null) {

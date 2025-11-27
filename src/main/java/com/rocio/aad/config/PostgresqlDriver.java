@@ -8,14 +8,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Esta clase es la encargada de gestionar las conexiones con la base de datos PostgreSQL y
- * el control manual de transacciones. Es la que usaremos desde los repositorios cuando
- * necesitemos iniciar, confirmar o deshacer una operación que afecte a varias consultas.
+ * Esta clase es la encargada de gestionar las conexiones con la base de datos PostgreSQL y * el control manual de transacciones. Es la que usaremos desde los repositorios cuando * necesitemos iniciar, confirmar o deshacer una operación que afecte a varias consultas.
  */
 @Slf4j
 @Component
 public class PostgresqlDriver {
-
     private final DataSource dataSource;
     private Connection txconnection;
 
@@ -24,8 +21,7 @@ public class PostgresqlDriver {
     }
 
     /**
-     * Este método devuelve una conexión JDBC. Si estamos dentro de una transacción,
-     * se utiliza la conexión transaccional; sino, se abre una nueva conexión.
+     * Este método devuelve una conexión JDBC. Si estamos dentro de una transacción, * se utiliza la conexión transaccional; sino, se abre una nueva conexión.
      */
     public Connection getConnection() throws SQLException {
         if (txconnection != null) {

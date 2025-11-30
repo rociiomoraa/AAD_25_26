@@ -12,3 +12,10 @@ spring:
 logging:
   level:
     org.springframework.jdbc.core: DEBUG
+
+aad:
+  sql:
+    scripts:
+      - classpath:sql/ddl/01_schema.sql
+      - classpath:sql/ddl/02_procedures.sql
+      - classpath:sql/ddl/03_sample_data.sql

@@ -1,70 +1,147 @@
-# 🗂️ Acceso a Datos – Curso 2025
+## Actividad 2.2. Migración del Acceso a Datos a Spring JdbcTemplate
 
-Repositorio de prácticas, ejercicios y proyectos de la asignatura **Acceso a Datos** del curso **2025-2026**.  
-Aquí se recopilan las diferentes actividades desarrolladas durante el curso, organizadas por unidades y con un enfoque
-práctico en el manejo de ficheros, persistencia de datos y acceso a bases de datos.
+Este proyecto corresponde a la **Actividad 2.2** de la asignatura *Acceso a Datos (AAD)* y consiste en migrar el sistema
+académico desarrollado en la Actividad 2.1, sustituyendo todo el acceso a datos basado en **JDBC manual** por un enfoque
+totalmente integrado en **Spring Boot** utilizando **JdbcTemplate**, **SimpleJdbcCall**, **transacciones declarativas**
+y el **DataSource autoconfigurado**.
 
----
-
-## 📘 Contenido del Repositorio
-
-Este repositorio incluye:
-
-- 🧩 Ejercicios prácticos por tema
-- 💻 Proyectos guiados y evaluables
-- 📂 Ejemplos de código explicativos
-- 📖 Documentación adicional y ficheros README por actividad
+La aplicación mantiene la misma funcionalidad que la versión anterior, pero ahora cuenta con una arquitectura más
+profesional, estable y mantenible.
 
 ---
 
-## 🧭 Índice de Actividades
+## Índice
 
-A continuación se listan las actividades organizadas por **unidad** o **bloque de contenido**.  
-*(Este índice se irá actualizando conforme avance la asignatura.)*
-
----
-
-### 🔹 Unidad 1 – Manejo de ficheros
-
-> En esta unidad se trabajan los fundamentos del acceso a ficheros en Java, tanto de texto como binarios, así como la
-> codificación, lectura, escritura y manejo de excepciones.
-
-| Nº  | Actividad                                                                                                           | Descripción                                                                                                                                                             | Estado |
-|-----|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
-| 1.1 | [Mini Explorador de Ficheros](https://github.com/rociiomoraa/AAD_25_26/tree/feature/act_1_1)                        | Aplicación que permite navegar por directorios, listar archivos y mostrar información básica del sistema de ficheros.                                                   | ✅      |
-| 1.2 | [Gestión de Notas con Acceso Secuencial y Aleatorio](https://github.com/rociiomoraa/AAD_25_26/tree/feature/act_1_2) | Programa que gestiona un fichero binario con registros de alumnos, permitiendo insertar, consultar y modificar notas mediante `RandomAccessFile`.                       | ✅      |
-| 1.3 | [Conversor de Formatos (CSV ↔ JSON ↔ XML)](https://github.com/rociiomoraa/AAD_25_26/tree/feature/act_1_3)           | Herramienta para convertir datos entre formatos CSV, JSON y XML usando flujos de texto y buffers para optimizar la lectura y escritura.                                 | ✅      |
-| 1.5 | [Gestor de Logs](https://github.com/rociiomoraa/AAD_25_26/tree/feature/act_1_5)                                     | Aplicación que gestiona un fichero de logs con fecha y hora, filtrado por fecha y opción de cambiar la codificación (UTF-8 / ISO-8859-1) mediante Spring Boot y Lombok. | ✅      |
+1. [Descripción general](#descripción-general)
+2. [Tecnologías utilizadas](#tecnologías-utilizadas)
+3. [Estructura del proyecto](#estructura-del-proyecto)
+4. [Inicialización automática de la base de datos](#inicialización-automática-de-la-base-de-datos)
+5. [Migración a Spring JDBC](#migración-a-spring-jdbc)
+6. [Funcionalidades implementadas](#funcionalidades-implementadas)
+7. [Conclusión personal](#conclusión-personal)
 
 ---
 
-### 🔹 Unidad 2 – Manejo de conectores
+## Descripción general
 
-> En esta unidad se abordan los conceptos y técnicas para conectar aplicaciones Java con bases de datos, utilizando JDBC
-> para realizar operaciones CRUD y gestionar transacciones.
+En esta práctica se ha reemplazado por completo el uso de **JDBC puro** (Connection, PreparedStatement, ResultSet,
+commits y rollbacks manuales) por una arquitectura basada en:
 
-| Nº  | Actividad                                                                                             | Descripción | Estado |
-|-----|-------------------------------------------------------------------------------------------------------|-------------|--------|
-| 2.0 | [Introduccion al manejo de conectores](https://github.com/rociiomoraa/AAD_25_26/tree/feature/act_2_0) |             | ✅      |  
+- **JdbcTemplate** para consultas SQL seguras y simplificadas.
+- **SimpleJdbcCall** para la ejecución de funciones almacenadas.
+- **@Transactional** para el manejo automático de transacciones.
+- **DataSource autoconfigurado** mediante Spring Boot.
 
----
-
-## ⚙️ Requisitos
-
-- ☕ **Java 17** o superior
-- 🧱 **Maven** o **Gradle** (para la gestión de dependencias)
-- 🐘 **PostgreSQL / MySQL** (según la práctica)
-- 🧰 **IDE recomendado**: IntelliJ IDEA o Visual Studio Code
-- 🐳 **Docker** (para entornos de base de datos en contenedor)
+Los repositorios han sido reescritos para utilizar JdbcTemplate y la capa de servicio ahora delega el control
+transaccional en Spring.
 
 ---
 
-## ✍️ Autora
+## Tecnologías utilizadas
 
-**Rocío Mora García**  
-📧 [rocio.mora.garcia02@gmail.com](mailto:rocio.mora.garcia02@gmail.com)  
-🔗 [LinkedIn – linkedin.com/in/rociiomoraa](https://linkedin.com/in/rociiomoraa)  
-📸 [Instagram – @rociiomoraa_](https://www.instagram.com/rociiomoraa_)  
-📅 Curso 2025-2026 – Asignatura: *Acceso a Datos (DAM – 2º curso)*
+- **Java 17**
+- **Spring Boot 3**
+- **Spring JDBC / JdbcTemplate**
+- **PostgreSQL 16 (Docker o local)**
+- **PL/pgSQL**
+- **Maven**
+- **Lombok**
 
+---
 
+## Estructura del proyecto
+
+```
+src/
+ └── main/
+     ├── java/com/rocio/aad/
+     │   ├── AadApplication.java
+     │   ├── application/
+     │   │     ├── ConsoleMenu.java
+     │   │     └── StudentManagementService.java
+     │   ├── config/
+     │   │     ├── JdbcConfig.java
+     │   │     └── DatabaseInitializer.java
+     │   ├── model/
+     │   │     ├── Student.java
+     │   │     ├── Module.java
+     │   │     └── Enrollment.java
+     │   └── repository/
+     │         ├── StudentRepository.java
+     │         ├── ModuleRepository.java
+     │         └── EnrollmentRepository.java
+     └── resources/
+         ├── application.yml
+         └── sql/ddl/
+              ├── 01_schema.sql
+              ├── 02_procedures.sql
+              └── 03_sample_data.sql
+```
+
+---
+
+## Inicialización automática de la base de datos
+
+Los scripts SQL se ejecutan al arrancar la aplicación mediante la clase:
+
+```
+DatabaseInitializer.java
+```
+
+Scripts:
+
+1. `01_schema.sql` → creación de tablas
+2. `02_procedures.sql` → función `count_enrollments`
+3. `03_sample_data.sql` → datos de prueba
+
+---
+
+## Migración a Spring JDBC
+
+Cambios principales implementados:
+
+- Eliminación de la clase `PostgresqlDriver`.
+- Sustitución total del acceso JDBC manual por **JdbcTemplate**.
+- Uso de RowMapper con funciones lambda.
+- Sustitución de CallableStatement por **SimpleJdbcCall**.
+- Implementación de **@Transactional** en métodos del servicio.
+- Centralización de la configuración del DataSource.
+
+---
+
+## Funcionalidades implementadas
+
+### 1. CRUD con JdbcTemplate
+
+- Estudiantes
+- Módulos
+- Matrículas
+
+### 2. Consultas parametrizadas
+
+- findById / findByNif / findByCode
+- exists / existsByNif / existsByCode
+
+### 3. Llamada a funciones almacenadas
+
+- `count_enrollments(student_id)` mediante SimpleJdbcCall
+
+### 4. Transacciones declarativas
+
+- Manejo automático de commit y rollback
+
+---
+
+## Conclusión personal
+
+La migración a Spring JDBC ha supuesto una mejora notable en la estructura del proyecto.  
+El sistema conserva la misma funcionalidad, pero ahora el acceso a datos es mucho más limpio, seguro y fácil de
+mantener.  
+Spring se encarga del manejo de conexiones, transacciones y ejecución de consultas, lo cual reduce errores y mejora la
+claridad del código.  
+Este proyecto marca un avance importante hacia una arquitectura más profesional, escalable y alineada con las prácticas
+modernas de desarrollo en Spring Boot.
+
+---
+
+Proyecto desarrollado por **Rocío Mora García** — DAM

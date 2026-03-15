@@ -33,7 +33,9 @@ public class Profile {
     // mappedBy indica que la relación está gestionada desde Student
     // (en el atributo "profile" de esa clase).
     // Esto evita que JPA cree una segunda clave foránea innecesaria.
-    @OneToOne(mappedBy = "profile")
+    // FetchType.LAZY evita cargar automáticamente el estudiante
+    // cuando se consulta el perfil.
+    @OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
     private Student student;
 
 }

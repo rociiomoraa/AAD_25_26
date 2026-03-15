@@ -5,11 +5,13 @@ import com.rocio.aad.model.Profile;
 import com.rocio.aad.model.Student;
 import com.rocio.aad.service.StudentManagementService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DataInitializer implements CommandLineRunner {
 
     // Servicio principal que gestiona estudiantes, módulos y matrículas
@@ -17,6 +19,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
+        log.info("=== INICIALIZANDO DATOS DE PRUEBA ===");
 
         // =========================
         // CREACIÓN DE PERFILES
@@ -50,6 +54,9 @@ public class DataInitializer implements CommandLineRunner {
         rocio = managementService.createStudent(rocio);
         juan = managementService.createStudent(juan);
 
+        log.info("Alumno creado: {}", rocio.getName());
+        log.info("Alumno creado: {}", juan.getName());
+
         // =========================
         // CREACIÓN DE MÓDULOS
         // =========================
@@ -66,18 +73,28 @@ public class DataInitializer implements CommandLineRunner {
         accesoDatos = managementService.createModule(accesoDatos);
         programacion = managementService.createModule(programacion);
 
+        log.info("Módulo creado: {}", accesoDatos.getName());
+        log.info("Módulo creado: {}", programacion.getName());
+
         // =========================
         // MATRÍCULAS
         // =========================
         managementService.enrollStudent(rocio.getId(), accesoDatos.getId());
+        log.info("Matrícula realizada: {} -> {}", rocio.getName(), accesoDatos.getName());
+
         managementService.enrollStudent(rocio.getId(), programacion.getId());
+        log.info("Matrícula realizada: {} -> {}", rocio.getName(), programacion.getName());
+
         managementService.enrollStudent(juan.getId(), programacion.getId());
+        log.info("Matrícula realizada: {} -> {}", juan.getName(), programacion.getName());
 
         // =========================
         // CONSULTA DE MATRÍCULAS
         // =========================
         int total = managementService.countEnrollments(rocio.getId());
-        System.out.println("Matrículas de Rocío: " + total);
+        log.info("Matrículas de {}: {}", rocio.getName(), total);
+
+        log.info("=== FIN DE INICIALIZACIÓN ===");
 
         // =========================
         // PRUEBA DE ROLLBACK

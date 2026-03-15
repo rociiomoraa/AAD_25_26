@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -35,6 +38,14 @@ public class Module {
     @NotNull(message = "Hours cannot be null")
     @Column(nullable = false)
     private Integer hours;
+
+    // Relación con la entidad Enrollment.
+    // Un módulo puede tener muchas matrículas asociadas.
+    // mappedBy indica que la relación está gestionada desde Enrollment.
+    // FetchType.LAZY evita cargar todas las matrículas automáticamente
+    // cuando se consulta un módulo.
+    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     // Constructor útil para crear módulos fácilmente
     public Module(String code, String name, Integer hours) {

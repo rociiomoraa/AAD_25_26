@@ -6,9 +6,9 @@ import com.rocio.aad.model.Student;
 import com.rocio.aad.repository.EnrollmentRepository;
 import com.rocio.aad.repository.ModuleRepository;
 import com.rocio.aad.repository.StudentRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -99,7 +99,6 @@ public class StudentManagementService {
     }
 
     /**
-     * OBLIGATORIO según el enunciado.
      * Cuenta cuántas matrículas tiene un estudiante usando JPQL.
      */
     public int countEnrollments(Long studentId) {

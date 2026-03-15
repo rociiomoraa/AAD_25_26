@@ -27,13 +27,17 @@ public class Enrollment {
 
     // Relación muchos a uno con Student.
     // Muchos registros de matrícula pueden pertenecer al mismo estudiante.
-    @ManyToOne(optional = false)
+    // FetchType.LAZY evita cargar el estudiante automáticamente
+    // cuando se consulta una matrícula.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
     // Relación muchos a uno con Module.
     // Muchos estudiantes pueden matricularse en el mismo módulo.
-    @ManyToOne(optional = false)
+    // FetchType.LAZY evita cargar el módulo automáticamente
+    // cuando se consulta la matrícula.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
 
